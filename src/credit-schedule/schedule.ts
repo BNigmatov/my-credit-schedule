@@ -35,9 +35,18 @@ export const createCreditScheduleArray = (
     : 'andam';
   const givenDate: Date = new Date(creditDate);
   givenDate.setHours(0, 0, 0, 0);
-  if (givenDate.getDate() > 20) {
+  if (givenDate.getDate() > 20 && !privileged_period) {
     // Если больше 20 го числа
     privileged_period++;
+  }
+  const lastDate: Date = new Date(givenDate);
+  lastDate.setMonth(lastDate.getMonth() + creditPeriod);
+  let lastDateFact: Date = new Date(lastDate);
+  lastDateFact.setDate(lastDateFact.getDate() - 1);
+  lastDateFact = getPayDate(lastDateFact);
+  // if (lastDateFact.getMonth() < lastDate.getMonth()) {
+  if (lastDate.getDate() < lastDateFact.getDate()) {
+    creditPeriod--;
   }
 
   const table: IScheduleRow[] = [];
@@ -73,12 +82,12 @@ export const createCreditScheduleArray = (
 
   if (typeCalc === 'anipot') {
     lastRow.payment_day = new Date(creditDate);
-    lastRow.payment_day.setDate(lastRow.payment_day.getDate() - 1);
+    // lastRow.payment_day.setDate(lastRow.payment_day.getDate() - 1);
     lastRow.percentage = 0;
     lastRow.monthly_payment = 0;
     lastRow.monthly_payment_gov = 0;
     lastRow.monthly_payment_client = 0;
-    privileged_period--; // ?????????????????????????????????????
+    // privileged_period--; // ?????????????????????????????????????
   } else {
     table.push(lastRow);
   }
@@ -163,8 +172,9 @@ export const createCreditScheduleArray = (
     row.payment_day = getPayDate(givenDate);
     if (row.month === creditPeriod) {
       // Последняя оплата должна быть на один день меньше от старта
-      row.payment_day.setDate(creditDate.getDate() - 1);
-      row.payment_day = getPayDate(row.payment_day);
+      // row.payment_day.setDate(creditDate.getDate() - 1);
+      // row.payment_day = getPayDate(row.payment_day);
+      row.payment_day = lastDateFact;
     }
 
     const xxxx2 = isCalcAsIpoteka
