@@ -39,13 +39,13 @@ export const createCreditScheduleArray = (
     // Если больше 20 го числа
     privilegedPeriod++;
   }
-  const lastDate: Date = new Date(givenDate);
-  lastDate.setMonth(lastDate.getMonth() + creditPeriod);
-  let lastDateFact: Date = new Date(lastDate);
-  lastDateFact.setDate(lastDateFact.getDate() - 1);
-  lastDateFact = getPayDate(lastDateFact);
-  // if (lastDateFact.getMonth() < lastDate.getMonth()) {
-  if (lastDate.getDate() < lastDateFact.getDate()) {
+  const finishDate1: Date = new Date(givenDate);
+  finishDate1.setMonth(finishDate1.getMonth() + creditPeriod);
+  let finishDate: Date = new Date(finishDate1);
+  finishDate.setDate(finishDate.getDate() - 1);
+  finishDate = getPayDate(finishDate);
+  // if (finishDate1.getMonth() > finishDate.getMonth()) {
+  if (finishDate1.getDate() < finishDate.getDate()) {
     creditPeriod--;
   }
 
@@ -150,7 +150,7 @@ export const createCreditScheduleArray = (
       // Последняя оплата должна быть на один день меньше от старта
       // row.payment_day.setDate(creditDate.getDate() - 1);
       // row.payment_day = getPayDate(row.payment_day);
-      row.payment_day = lastDateFact;
+      row.payment_day = finishDate;
     }
 
     const xxxx2 = isCalcAsIpoteka
