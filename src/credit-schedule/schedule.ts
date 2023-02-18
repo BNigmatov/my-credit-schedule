@@ -108,21 +108,7 @@ export const createCreditScheduleArray = (
     // =+ОКРУГЛ(b!B9/(ЕСЛИ(ИЛИ(ДЕНЬ(b!$B$1)=1;И(ДЕНЬ(b!$B$1)=2;ДЕНЬНЕД(ДАТАМЕС(b!$B$1;b!$B$5)-1;2)>=6);И(ДЕНЬ(b!$B$1)=3;ДЕНЬНЕД(ДАТАМЕС(b!$B$1;b!$B$5)-1;2)=7));b!$B$5-1;b!$B$5)-ЕСЛИ(ДЕНЬ(b!$B$1)>20;ЕСЛИ(b!$B$6=0;0+1;b!$B$6);b!$B$6));2)
     G8 = ОКРУГЛ(
       creditSumma /
-        (ЕСЛИ(
-          ИЛИ(
-            ДЕНЬ(givenDate) === 1,
-            И(
-              ДЕНЬ(givenDate) === 2,
-              ДЕНЬНЕД(addDay(ДАТАМЕС(givenDate, creditPeriod), -1), 2) >= 6
-            ),
-            И(
-              ДЕНЬ(givenDate) === 3,
-              ДЕНЬНЕД(addDay(ДАТАМЕС(givenDate, creditPeriod), -1), 2) === 7
-            )
-          ),
-          creditPeriod - 1,
-          creditPeriod
-        ) -
+        (creditPeriod -
           ЕСЛИ(
             ДЕНЬ(givenDate) > 20,
             ЕСЛИ(privileged_period === 0, 0 + 1, privileged_period),
@@ -140,17 +126,7 @@ export const createCreditScheduleArray = (
           N /
             (Math.pow(
               1 + N,
-              ЕСЛИ(
-                ДЕНЬ(givenDate) === 1 ||
-                  (ДЕНЬ(givenDate) === 2 &&
-                    ДЕНЬНЕД(addDay(ДАТАМЕС(givenDate, creditPeriod), -1), 2) >=
-                      6) ||
-                  (ДЕНЬ(givenDate) === 3 &&
-                    ДЕНЬНЕД(addDay(ДАТАМЕС(givenDate, creditPeriod), -1), 2) ===
-                      7),
-                creditPeriod - 1,
-                creditPeriod
-              ) -
+              creditPeriod -
                 ЕСЛИ(
                   ДЕНЬ(givenDate) > 20,
                   ЕСЛИ(privileged_period === 0, 0 + 1, privileged_period),
@@ -208,28 +184,7 @@ export const createCreditScheduleArray = (
               ЕСЛИ(privileged_period === 0, 0 + 1, privileged_period),
               privileged_period
             ),
-          ЕСЛИ(
-            row.month ===
-              ЕСЛИ(
-                ИЛИ(
-                  ДЕНЬ(givenDate) === 1,
-                  И(
-                    ДЕНЬ(givenDate) === 2,
-                    ДЕНЬНЕД(addDay(ДАТАМЕС(givenDate, creditPeriod), -1), 2) >=
-                      6
-                  ),
-                  И(
-                    ДЕНЬ(givenDate) === 3,
-                    ДЕНЬНЕД(addDay(ДАТАМЕС(givenDate, creditPeriod), -1), 2) ===
-                      7
-                  )
-                ),
-                creditPeriod - 1,
-                creditPeriod
-              ),
-            row.balance,
-            G8
-          ),
+          ЕСЛИ(row.month === creditPeriod, row.balance, G8),
           0
         ),
         0
@@ -248,24 +203,7 @@ export const createCreditScheduleArray = (
         ЕСЛИ(
           row.month <= creditPeriod,
           ЕСЛИ(
-            row.month ===
-              ЕСЛИ(
-                ИЛИ(
-                  ДЕНЬ(givenDate) === 1,
-                  И(
-                    ДЕНЬ(givenDate) === 2,
-                    ДЕНЬНЕД(addDay(ДАТАМЕС(givenDate, creditPeriod), -1), 2) >=
-                      6
-                  ),
-                  И(
-                    ДЕНЬ(givenDate) === 3,
-                    ДЕНЬНЕД(addDay(ДАТАМЕС(givenDate, creditPeriod), -1), 2) ===
-                      7
-                  )
-                ),
-                creditPeriod - 1,
-                creditPeriod
-              ),
+            row.month === creditPeriod,
             row.balance,
             ЕСЛИ(G8 > row.percentage, G8 - row.percentage, 0)
           ),
@@ -286,24 +224,7 @@ export const createCreditScheduleArray = (
         ЕСЛИ(
           row.month > 0,
           ЕСЛИ(
-            row.month ===
-              ЕСЛИ(
-                ИЛИ(
-                  ДЕНЬ(givenDate) === 1,
-                  И(
-                    ДЕНЬ(givenDate) === 2,
-                    ДЕНЬНЕД(addDay(ДАТАМЕС(givenDate, creditPeriod), -1), 2) >=
-                      6
-                  ),
-                  И(
-                    ДЕНЬ(givenDate) === 3,
-                    ДЕНЬНЕД(addDay(ДАТАМЕС(givenDate, creditPeriod), -1), 2) ===
-                      7
-                  )
-                ),
-                creditPeriod - 1,
-                creditPeriod
-              ),
+            row.month === creditPeriod,
             row.balance,
             ЕСЛИ(
               ИЛИ(
