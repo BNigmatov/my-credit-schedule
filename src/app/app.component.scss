@@ -1,0 +1,13 @@
+my-app {
+  .table {
+    width: 100%;
+    border-spacing: 0;
+  }
+  .table th,
+  .table td {
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 3px;
+    padding-right: 5px;
+  }
+}

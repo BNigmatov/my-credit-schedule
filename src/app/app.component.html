@@ -1,0 +1,84 @@
+<form [formGroup]="form">
+  <mat-form-field>
+    <mat-label i18n="@@CRM-TEST-CREDIT-SCHEDULE-SUMMA">
+      Сумма кредита
+    </mat-label>
+    <input matInput formControlName="summa" type="number" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label i18n="@@CRM-TEST-CREDIT-SCHEDULE-PERIOD">
+      Срок кредитования (месяц)
+    </mat-label>
+    <input matInput formControlName="period" type="number" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label i18n="@@CRM-TEST-CREDIT-SCHEDULE-PROCENT">
+      Годовая процентная ставка
+    </mat-label>
+    <input matInput formControlName="procent" type="number" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label i18n="@@CRM-TEST-CREDIT-SCHEDULE-PROCENT-GOV">
+      Процент погащения бюджетом
+    </mat-label>
+    <input matInput formControlName="gov_percentage" type="number" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label i18n="@@CRM-TEST-CREDIT-SCHEDULE-DATE"> Дата начало </mat-label>
+    <input matInput formControlName="date" [matDatepicker]="pickerDate" />
+    <mat-datepicker-toggle matSuffix [for]="pickerDate"></mat-datepicker-toggle>
+    <mat-datepicker #pickerDate></mat-datepicker>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label i18n="@@CRM-TEST-CREDIT-SCHEDULE-PRIVILEGED">
+      Льготный период
+    </mat-label>
+    <input matInput formControlName="privileged" type="number" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label i18n="@@CRM-TEST-CREDIT-SCHEDULE-GOV-PERIOD">
+      Кол.месяцев если бюджетом
+    </mat-label>
+    <input matInput formControlName="gov_period" type="number" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label i18n="@@CRM-TEST-CREDIT-SCHEDULE-FIX-DAY">
+      Число месяца возврата
+    </mat-label>
+    <input matInput formControlName="day_of_month" type="number" />
+  </mat-form-field>
+
+  <div fxLayout="row">
+    <mat-label i18n="@@CRM-TEST-CREDIT-SCHEDULE-TYPE" class="mr-3">
+      Расчет платежа:
+    </mat-label>
+    <mat-radio-group formControlName="is_not_annuitet">
+      <mat-radio-button
+        [value]="false"
+        i18n="@@CRM-TEST-CREDIT-SCHEDULE-ANNUTET"
+        class="mx-1"
+      >
+        Аннуитет
+      </mat-radio-button>
+      <mat-radio-button
+        [value]="true"
+        i18n="@@CRM-TEST-CREDIT-SCHEDULE-NOT_ANNUTET"
+        class="mx-1"
+      >
+        Уменьшающий
+      </mat-radio-button>
+    </mat-radio-group>
+  </div>
+</form>
+
+<p>
+  Выбранный калькулятор: <strong>{{ typeCalc }}</strong>
+</p>
+<p [innerHtml]="innerHTML"></p>
