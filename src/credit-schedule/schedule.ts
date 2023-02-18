@@ -21,23 +21,23 @@ export const createCreditScheduleArray = (
   creditPeriod,
   creditPercentage,
   creditSumma,
-  day_of_month = 10,
-  is_not_annuitet = false,
-  privileged_period = 0,
+  dayOfMonth = 10,
+  isNotAnnuitet = false,
+  privilegedPeriod = 0,
   govCreditPercentage,
   govCreditPeriod
 ) => {
   // Муддати 36 ой (36 ҳам киради)гача ва % и 25% (25 ҳам киради)га ча бўлган кредитлар Андамда чиқиши керак, мазкур муддат ва фоиздан ошганда аннипотека графиги чиқиши керак
-  const typeCalc: 'andam' | 'anipot' = is_not_annuitet
+  const typeCalc: 'andam' | 'anipot' = isNotAnnuitet
     ? 'andam'
     : creditPeriod > 36 || creditPercentage > 25
     ? 'anipot'
     : 'andam';
   const givenDate: Date = new Date(creditDate);
   givenDate.setHours(0, 0, 0, 0);
-  if (givenDate.getDate() > 20 && !privileged_period) {
+  if (givenDate.getDate() > 20 && !privilegedPeriod) {
     // Если больше 20 го числа
-    privileged_period++;
+    privilegedPeriod++;
   }
   const lastDate: Date = new Date(givenDate);
   lastDate.setMonth(lastDate.getMonth() + creditPeriod);
@@ -62,8 +62,8 @@ export const createCreditScheduleArray = (
 
   const isCalcAsIpoteka =
     creditPeriod > 240 ||
-    (!is_not_annuitet &&
-      privileged_period === 0 &&
+    (!isNotAnnuitet &&
+      privilegedPeriod === 0 &&
       (creditPeriod > 36 || (creditPeriod > 30 && creditPercentage > 26)));
   const days = diffDays(lastRow.payment_day, givenDate);
   const xxxx0 = isCalcAsIpoteka
@@ -87,7 +87,7 @@ export const createCreditScheduleArray = (
     lastRow.monthly_payment = 0;
     lastRow.monthly_payment_gov = 0;
     lastRow.monthly_payment_client = 0;
-    // privileged_period--; // ?????????????????????????????????????
+    // privilegedPeriod--; // ?????????????????????????????????????
   } else {
     table.push(lastRow);
   }
@@ -103,7 +103,7 @@ export const createCreditScheduleArray = (
   };
 
   let G8;
-  if (is_not_annuitet) {
+  if (isNotAnnuitet) {
     // Уменшение
     // =+ОКРУГЛ(b!B9/(ЕСЛИ(ИЛИ(ДЕНЬ(b!$B$1)=1;И(ДЕНЬ(b!$B$1)=2;ДЕНЬНЕД(ДАТАМЕС(b!$B$1;b!$B$5)-1;2)>=6);И(ДЕНЬ(b!$B$1)=3;ДЕНЬНЕД(ДАТАМЕС(b!$B$1;b!$B$5)-1;2)=7));b!$B$5-1;b!$B$5)-ЕСЛИ(ДЕНЬ(b!$B$1)>20;ЕСЛИ(b!$B$6=0;0+1;b!$B$6);b!$B$6));2)
     G8 = ОКРУГЛ(
@@ -111,33 +111,33 @@ export const createCreditScheduleArray = (
         (creditPeriod -
           ЕСЛИ(
             ДЕНЬ(givenDate) > 20,
-            ЕСЛИ(privileged_period === 0, 0 + 1, privileged_period),
-            privileged_period
+            ЕСЛИ(privilegedPeriod === 0, 0 + 1, privilegedPeriod),
+            privilegedPeriod
           )),
       2
     );
   } else {
     // Анdam
     // =ОКРУГЛ(b!B9*(ОКРУГЛ(b!B7%/12;7)+(ОКРУГЛ(b!B7%/12;7))/((1+(ОКРУГЛ(b!B7%/12;7)))^(ЕСЛИ(ИЛИ(ДЕНЬ(b!$B$1)=1;И(ДЕНЬ(b!$B$1)=2;ДЕНЬНЕД(ДАТАМЕС(b!$B$1;b!$B$5)-1;2)>=6);И(ДЕНЬ(b!$B$1)=3;ДЕНЬНЕД(ДАТАМЕС(b!$B$1;b!$B$5)-1;2)=7));b!$B$5-1;b!$B$5)-ЕСЛИ(ДЕНЬ(b!$B$1)>20;ЕСЛИ(b!$B$6=0;0+1;b!$B$6);b!$B$6))-1));2)
-    const N = ОКРУГЛ(creditPercentage / 100 / 12, 7);
+    const percentageMonth = ОКРУГЛ(creditPercentage / 100 / 12, 7);
     G8 = ОКРУГЛ(
       creditSumma *
-        (N +
-          N /
+        (percentageMonth +
+          percentageMonth /
             (Math.pow(
-              1 + N,
+              1 + percentageMonth,
               creditPeriod -
                 ЕСЛИ(
                   ДЕНЬ(givenDate) > 20,
-                  ЕСЛИ(privileged_period === 0, 0 + 1, privileged_period),
-                  privileged_period
+                  ЕСЛИ(privilegedPeriod === 0, 1, privilegedPeriod),
+                  privilegedPeriod
                 )
             ) -
               1)),
       2
     );
   }
-  givenDate.setDate(day_of_month);
+  givenDate.setDate(dayOfMonth);
 
   while (lastRow.month < creditPeriod && lastRow.loan < lastRow.balance) {
     const row: IScheduleRow = {
@@ -172,7 +172,7 @@ export const createCreditScheduleArray = (
     //   0
     // );
 
-    if (is_not_annuitet) {
+    if (isNotAnnuitet) {
       // Уменшение
       // =ЕСЛИ(A7<>"";ЕСЛИ(A7>ЕСЛИ(ДЕНЬ(b!$B$1)>20;ЕСЛИ(b!$B$6=0;0+1;b!$B$6);b!$B$6);ЕСЛИ(A7=ЕСЛИ(ИЛИ(ДЕНЬ(b!$B$1)=1;И(ДЕНЬ(b!$B$1)=2;ДЕНЬНЕД(ДАТАМЕС(b!$B$1;b!$B$5)-1;2)>=6);И(ДЕНЬ(b!$B$1)=3;ДЕНЬНЕД(ДАТАМЕС(b!$B$1;b!$B$5)-1;2)=7));b!$B$5-1;b!$B$5);C7;$G$6);"");"")
       row.loan = ЕСЛИ(
@@ -181,8 +181,8 @@ export const createCreditScheduleArray = (
           row.month >
             ЕСЛИ(
               ДЕНЬ(givenDate) > 20,
-              ЕСЛИ(privileged_period === 0, 0 + 1, privileged_period),
-              privileged_period
+              ЕСЛИ(privilegedPeriod === 0, 0 + 1, privilegedPeriod),
+              privilegedPeriod
             ),
           ЕСЛИ(row.month === creditPeriod, row.balance, G8),
           0
@@ -196,8 +196,8 @@ export const createCreditScheduleArray = (
         row.month <=
           ЕСЛИ(
             ДЕНЬ(givenDate) > 20,
-            ЕСЛИ(privileged_period === 0, 0 + 1, privileged_period),
-            privileged_period
+            ЕСЛИ(privilegedPeriod === 0, 0 + 1, privilegedPeriod),
+            privilegedPeriod
           ),
         0,
         ЕСЛИ(
@@ -217,8 +217,8 @@ export const createCreditScheduleArray = (
         row.month <=
           ЕСЛИ(
             ДЕНЬ(givenDate) > 20,
-            ЕСЛИ(privileged_period === 0, 0 + 1, privileged_period),
-            privileged_period
+            ЕСЛИ(privilegedPeriod === 0, 0 + 1, privilegedPeriod),
+            privilegedPeriod
           ),
         0,
         ЕСЛИ(
@@ -241,8 +241,8 @@ export const createCreditScheduleArray = (
               -ОКРУГЛ(
                 ОСПЛТ(
                   creditPercentage / 100 / 12,
-                  row.month - privileged_period,
-                  creditPeriod - privileged_period - 1,
+                  row.month - privilegedPeriod,
+                  creditPeriod - privilegedPeriod - 1,
                   creditSumma
                 ),
                 2
@@ -250,8 +250,8 @@ export const createCreditScheduleArray = (
               -ОКРУГЛ(
                 ОСПЛТ(
                   creditPercentage / 100 / 12,
-                  row.month - privileged_period,
-                  creditPeriod - privileged_period,
+                  row.month - privilegedPeriod,
+                  creditPeriod - privilegedPeriod,
                   creditSumma
                 ),
                 2
