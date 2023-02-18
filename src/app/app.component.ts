@@ -11,7 +11,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { createCreditScheduleArray } from '../credit-schedule/schedule';
 import { creditScheduleArrayToHtml } from '../credit-schedule/tools-html';
 
-const LOCAL_STORAGE_ID = 'my-schedule';
+const LOCAL_STORAGE_ID = 'my-credit-schedule';
 
 @Component({
   selector: 'my-app',
