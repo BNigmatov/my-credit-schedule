@@ -22,7 +22,7 @@ const LOCAL_STORAGE_ID = 'my-credit-schedule';
 })
 export class AppComponent implements OnInit {
   formValues: any = {
-    date: new Date('2023-01-23'),
+    date: new Date(),
     period: 240,
     procent: 17,
     summa: 100000000,

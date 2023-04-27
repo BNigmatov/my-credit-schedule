@@ -281,10 +281,13 @@ export const createCreditScheduleArray = (
       govCreditPercentage > 0 &&
       govCreditPeriod >= row.month
     ) {
-      row.monthly_payment_gov =
-        row.percentage * (govCreditPercentage / creditPercentage);
+      row.monthly_payment_gov = ОКРУГЛ(
+        ОКРУГЛ(govCreditPercentage / creditPercentage, 7) * row.percentage,
+        2
+      );
       row.monthly_payment_client =
         row.monthly_payment - row.monthly_payment_gov;
+      // row.percentage - row.monthly_payment_gov;
     } else {
       row.monthly_payment_client = row.monthly_payment;
     }
